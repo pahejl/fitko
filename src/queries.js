@@ -118,6 +118,16 @@ export const q = {
     ORDER BY day ASC
     LIMIT 30
   `),
+  exerciseHistoryByType: db.prepare(`
+    SELECT date(created_at, 'localtime') AS day,
+           CASE WHEN ? = 'counterweight' THEN MIN(weight) ELSE MAX(weight) END AS max_weight,
+           COUNT(*) AS sets_count
+    FROM sets
+    WHERE exercise_id=? AND load_type IS ?
+    GROUP BY date(created_at, 'localtime')
+    ORDER BY day ASC
+    LIMIT 30
+  `),
 
   setInsert: db.prepare(`INSERT INTO sets (workout_id, exercise_id, created_at, weight, reps, load_type) VALUES (?,?,?,?,?,?)`),
   setUpdate: db.prepare(`UPDATE sets SET weight=?, reps=?, load_type=? WHERE id=?`),

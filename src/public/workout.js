@@ -54,6 +54,7 @@
         mPR.textContent = '';
       }
     }
+    if (chartVisible) loadChart();
   }
 
   async function loadPRs() {
@@ -83,9 +84,9 @@
     setTimeout(function(){ saveConfirm.style.display = 'none'; }, 1800);
   }
 
-  function renderChart(history, container) {
+  function renderChart(history, container, label) {
     if (!history.length) {
-      container.innerHTML = '<div class="muted">Zatím žádná data.</div>';
+      container.innerHTML = '<div class="muted">Žádná data pro: ' + (label || '?') + '</div>';
       return;
     }
     var W = 300, H = 160;
@@ -122,10 +123,13 @@
   async function loadChart() {
     if (!currentExerciseId) return;
     chartEl.innerHTML = '<div class="muted">Načítám...</div>';
-    var res = await fetch('/api/exercises/' + currentExerciseId + '/history');
+    var url = '/api/exercises/' + currentExerciseId + '/history';
+    if (currentType) url += '?load_type=' + encodeURIComponent(currentType);
+    var res = await fetch(url);
     var j = await res.json();
     if (!j.ok) { chartEl.innerHTML = '<div class="muted">Chyba.</div>'; return; }
-    renderChart(j.history, chartEl);
+    var label = currentType || 'všechny typy';
+    renderChart(j.history, chartEl, label);
   }
 
   async function loadSets(){
