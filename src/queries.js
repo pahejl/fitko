@@ -90,10 +90,11 @@ export const q = {
             WHERE s.exercise_id=e.id
             ORDER BY s.created_at DESC
             LIMIT 1) AS last_reps,
-           (CASE WHEN e.load_type = 'counterweight'
-             THEN (SELECT MIN(s.weight) FROM sets s WHERE s.exercise_id=e.id AND s.load_type IS 'counterweight')
-             ELSE (SELECT MAX(s.weight) FROM sets s WHERE s.exercise_id=e.id AND s.load_type IS e.load_type)
-            END) AS pr_weight
+           (SELECT MAX(
+             CASE WHEN s.load_type = 'counterweight'
+               THEN max(0.0, COALESCE((SELECT CAST(value AS REAL) FROM settings WHERE key='bodyweight_kg'), 0) - s.weight)
+               ELSE s.weight
+             END) FROM sets s WHERE s.exercise_id = e.id AND s.weight IS NOT NULL) AS pr_weight
     FROM exercise_gym eg
     JOIN exercises e ON e.id=eg.exercise_id
     WHERE eg.gym_id=?
