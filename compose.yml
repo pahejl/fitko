@@ -1,0 +1,35 @@
+services:
+  fitko:
+    container_name: fitko
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+
+    environment:
+      - TZ=Europe/Prague
+      - PORT=8080
+      - DATA_DIR=/data
+      # Nastav pro HTTP Basic Auth (doporučeno při veřejném přístupu přes Traefik)
+      # Pokud nenastavíš, auth je vypnutá.
+      - FITKO_USER=${FITKO_USER:-}
+      - FITKO_PASS=${FITKO_PASS:-}
+
+    volumes:
+      - /volume2/docker/fitko/data:/data
+
+    networks:
+      - t3_proxy
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=t3_proxy"
+      - "traefik.http.routers.fitko-rtr.entrypoints=websecure"
+      - "traefik.http.routers.fitko-rtr.rule=Host(`fitko.pahejl.com`)"
+      - "traefik.http.routers.fitko-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.fitko-rtr.service=fitko-svc"
+      - "traefik.http.services.fitko-svc.loadbalancer.server.port=8080"
+
+networks:
+  t3_proxy:
+    external: true

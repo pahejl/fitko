@@ -1,0 +1,16 @@
+{
+  "name": "fitko",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Mobile-first workout logging app (fitko) with admin bulk import + SQLite.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "express": "^4.19.2"
+  }
+}
