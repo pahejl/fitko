@@ -86,7 +86,7 @@ router.get("/:id(\\d+)", (req, res) => {
                   ${e.last_weight != null || e.last_reps != null
                     ? `<span class="pill">last: ${esc(String(e.last_weight ?? "—"))}kg × ${esc(String(e.last_reps ?? "—"))}</span>`
                     : `<span class="pill">last: —</span>`}
-                  ${e.pr_weight != null ? `<span class="pill pr">PR: ${esc(String(e.pr_weight))}kg</span>` : ""}
+                  ${e.pr_weight != null ? `<span class="pill pr">~${Math.round(e.pr_weight)} kg</span>` : ""}
                   ${e.notes ? `<span class="pill note">${esc(e.notes)}</span>` : ""}
                 </div>
               </button>

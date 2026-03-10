@@ -94,37 +94,64 @@ export const q = {
              CASE WHEN s.load_type = 'counterweight'
                THEN max(0.0, COALESCE((SELECT CAST(value AS REAL) FROM settings WHERE key='bodyweight_kg'), 0) - s.weight)
                ELSE s.weight
-             END) FROM sets s WHERE s.exercise_id = e.id AND s.weight IS NOT NULL) AS pr_weight
+             END * (1.0 + s.reps / 30.0)
+           ) FROM sets s WHERE s.exercise_id = e.id AND s.weight IS NOT NULL AND s.reps > 0) AS pr_weight
     FROM exercise_gym eg
     JOIN exercises e ON e.id=eg.exercise_id
     WHERE eg.gym_id=?
     ORDER BY eg.position ASC, lower(e.name) ASC
   `),
 
-  exercisePRForType: db.prepare(`SELECT MAX(weight) AS pr_max, MIN(weight) AS pr_min FROM sets WHERE exercise_id=? AND load_type IS ? AND weight IS NOT NULL`),
+  // Best estimated 1RM (Epley) for a given exercise + load_type
+  // params: (exercise_id, load_type)
+  exerciseBestE1RMForType: db.prepare(`
+    SELECT MAX(
+      CASE WHEN load_type = 'counterweight'
+        THEN max(0.0, COALESCE((SELECT CAST(value AS REAL) FROM settings WHERE key='bodyweight_kg'), 0) - weight)
+        ELSE weight
+      END * (1.0 + reps / 30.0)
+    ) AS best_e1rm
+    FROM sets
+    WHERE exercise_id=? AND load_type IS ? AND weight IS NOT NULL AND reps > 0
+  `),
   exercisePRsByType: db.prepare(`
     SELECT load_type,
-           CASE WHEN load_type = 'counterweight' THEN MIN(weight) ELSE MAX(weight) END AS pr_weight
+           MAX(
+             CASE WHEN load_type = 'counterweight'
+               THEN max(0.0, COALESCE((SELECT CAST(value AS REAL) FROM settings WHERE key='bodyweight_kg'), 0) - weight)
+               ELSE weight
+             END * (1.0 + reps / 30.0)
+           ) AS pr_e1rm
     FROM sets
-    WHERE exercise_id=? AND load_type IS NOT NULL AND weight IS NOT NULL
+    WHERE exercise_id=? AND load_type IS NOT NULL AND weight IS NOT NULL AND reps > 0
     GROUP BY load_type
   `),
   exerciseHistory: db.prepare(`
     SELECT date(created_at, 'localtime') AS day,
-           MAX(weight) AS max_weight,
+           MAX(
+             CASE WHEN load_type = 'counterweight'
+               THEN max(0.0, COALESCE((SELECT CAST(value AS REAL) FROM settings WHERE key='bodyweight_kg'), 0) - weight)
+               ELSE weight
+             END * (1.0 + reps / 30.0)
+           ) AS max_weight,
            COUNT(*) AS sets_count
     FROM sets
-    WHERE exercise_id=?
+    WHERE exercise_id=? AND weight IS NOT NULL AND reps > 0
     GROUP BY date(created_at, 'localtime')
     ORDER BY day ASC
     LIMIT 30
   `),
   exerciseHistoryByType: db.prepare(`
     SELECT date(created_at, 'localtime') AS day,
-           CASE WHEN ? = 'counterweight' THEN MIN(weight) ELSE MAX(weight) END AS max_weight,
+           MAX(
+             CASE WHEN ? = 'counterweight'
+               THEN max(0.0, COALESCE((SELECT CAST(value AS REAL) FROM settings WHERE key='bodyweight_kg'), 0) - weight)
+               ELSE weight
+             END * (1.0 + reps / 30.0)
+           ) AS max_weight,
            COUNT(*) AS sets_count
     FROM sets
-    WHERE exercise_id=? AND load_type IS ?
+    WHERE exercise_id=? AND load_type IS ? AND weight IS NOT NULL AND reps > 0
     GROUP BY date(created_at, 'localtime')
     ORDER BY day ASC
     LIMIT 30

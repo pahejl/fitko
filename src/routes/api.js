@@ -2,6 +2,7 @@
 import { Router } from "express";
 import { q } from "../queries.js";
 import { nowIso } from "../db.js";
+import { getBodyweightKg } from "../helpers.js";
 
 const router = Router();
 
@@ -24,16 +25,14 @@ router.post("/sets", (req, res) => {
     if (workout.ended_at) return res.json({ ok: false, error: "workout already ended" });
 
     const lt = load_type || (q.exerciseById.get(exercise_id)?.load_type ?? null);
-    const prRow = q.exercisePRForType.get(exercise_id, lt);
     let newPR = false;
-    if (Number.isFinite(weight) && weight > 0) {
-      if (lt === 'counterweight') {
-        const prevMin = prRow?.pr_min ?? null;
-        newPR = prevMin === null || weight < prevMin;
-      } else {
-        const prevMax = prRow?.pr_max ?? 0;
-        newPR = weight > prevMax;
-      }
+    if (Number.isFinite(weight) && weight >= 0 && reps > 0) {
+      const effWeight = lt === 'counterweight'
+        ? Math.max(0, getBodyweightKg() - weight)
+        : weight;
+      const newE1rm = effWeight * (1 + reps / 30);
+      const prevBest = q.exerciseBestE1RMForType.get(exercise_id, lt)?.best_e1rm ?? 0;
+      newPR = newE1rm > prevBest;
     }
     q.setInsert.run(workout_id, exercise_id, nowIso(), Number.isFinite(weight) ? weight : null, reps, lt);
     return res.json({ ok: true, newPR });
@@ -47,7 +46,7 @@ router.get("/exercises/:id(\\d+)/prs", (req, res) => {
     const id = Number(req.params.id);
     const rows = q.exercisePRsByType.all(id);
     const prs = {};
-    for (const r of rows) { if (r.load_type) prs[r.load_type] = r.pr_weight; }
+    for (const r of rows) { if (r.load_type) prs[r.load_type] = r.pr_e1rm; }
     res.json({ ok: true, prs });
   } catch (e) {
     res.json({ ok: false, error: e?.message || String(e) });

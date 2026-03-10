@@ -51,8 +51,7 @@
     if (mPR) {
       var pr = currentType ? currentPRs[currentType] : null;
       if (pr != null) {
-        var label = currentType === 'counterweight' ? 'PR (nejlehčí): ' : 'PR: ';
-        mPR.textContent = label + pr + 'kg';
+        mPR.innerHTML = '<span class="pill pr">~' + Math.round(pr) + ' kg</span>';
       } else {
         mPR.textContent = '';
       }
@@ -111,10 +110,10 @@
       return '<text x="' + xS(i) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="9" fill="#999">' + parseInt(parts[2]) + '.' + parseInt(parts[1]) + '</text>';
     }).join('');
     var yLabels = [minW, maxW].map(function(w){
-      return '<text x="' + (PAD.left - 4) + '" y="' + (yS(w) + 3) + '" text-anchor="end" font-size="9" fill="#999">' + w + '</text>';
+      return '<text x="' + (PAD.left - 4) + '" y="' + (yS(w) + 3) + '" text-anchor="end" font-size="9" fill="#999">' + Math.round(w) + '</text>';
     }).join('');
     var dots = history.map(function(h, i){
-      return '<circle cx="' + xS(i) + '" cy="' + yS(Number(h.max_weight) || 0) + '" r="3.5" fill="#111"><title>' + h.day + ': ' + h.max_weight + 'kg</title></circle>';
+      return '<circle cx="' + xS(i) + '" cy="' + yS(Number(h.max_weight) || 0) + '" r="3.5" fill="#111"><title>' + h.day + ': ~' + Math.round(h.max_weight) + ' kg</title></circle>';
     }).join('');
     container.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="overflow:visible;display:block;">' +
       '<line x1="' + PAD.left + '" y1="' + PAD.top + '" x2="' + PAD.left + '" y2="' + (PAD.top + iH) + '" stroke="#eee" stroke-width="1"/>' +
@@ -131,7 +130,7 @@
     var res = await fetch(url);
     var j = await res.json();
     if (!j.ok) { chartEl.innerHTML = '<div class="muted">Chyba.</div>'; return; }
-    var label = currentType || 'všechny typy';
+    var label = (currentType ? fmtLt(currentType) : 'Vše') + ' · est. 1RM';
     renderChart(j.history, chartEl, label);
   }
 
