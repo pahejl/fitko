@@ -3,7 +3,7 @@ import { Router } from "express";
 import { q } from "../queries.js";
 import { page, esc } from "../ui.js";
 import { topNav } from "../nav.js";
-import { fmtDt, computeWorkoutVolume, refreshTotalVolume } from "../helpers.js";
+import { fmtDt, computeWorkoutVolume, refreshTotalVolume, fmtLoadType } from "../helpers.js";
 import { nowIso } from "../db.js";
 
 const router = Router();
@@ -82,7 +82,7 @@ router.get("/:id(\\d+)", (req, res) => {
                 <strong>${esc(e.name)}</strong>
                 <div class="small">
                   <span class="pill">${esc(e.body_part || "-")}</span>
-                  <span class="pill">${esc(e.load_type || "-")}</span>
+                  <span class="pill">${esc(fmtLoadType(e.load_type))}</span>
                   ${e.last_weight != null || e.last_reps != null
                     ? `<span class="pill">last: ${esc(String(e.last_weight ?? "—"))}kg × ${esc(String(e.last_reps ?? "—"))}</span>`
                     : `<span class="pill">last: —</span>`}

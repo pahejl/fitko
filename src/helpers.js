@@ -2,6 +2,18 @@
 import { q } from "./queries.js";
 import { db } from "./db.js";
 
+const LOAD_TYPE_CS = {
+  machine:      "Stroj",
+  cable:        "Kladka",
+  dumbbell:     "Činka",
+  barbell:      "Osa",
+  bodyweight:   "Vlastní",
+  counterweight:"Protizávaží",
+};
+export function fmtLoadType(lt) {
+  return LOAD_TYPE_CS[lt] || lt || "—";
+}
+
 export function fmtDt(iso) {
   if (!iso) return "";
   try {

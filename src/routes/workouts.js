@@ -2,7 +2,7 @@ import { Router } from "express";
 import { q } from "../queries.js";
 import { page, esc } from "../ui.js";
 import { topNav } from "../nav.js";
-import { fmtDt, computeWorkoutVolume, refreshTotalVolume } from "../helpers.js";
+import { fmtDt, computeWorkoutVolume, refreshTotalVolume, fmtLoadType } from "../helpers.js";
 
 const router = Router();
 
@@ -256,7 +256,7 @@ router.get("/:id(\\d+)", (req, res) => {
                 <div class="setrow" style="align-items:flex-start;">
                   <div style="flex:1;">
                     <strong>${wv}kg</strong> × <strong>${s.reps}</strong>
-                    ${lt ? `<span class="pill">${esc(lt)}</span>` : ""}
+                    ${lt ? `<span class="pill">${esc(fmtLoadType(lt))}</span>` : ""}
                     <span class="muted">(${esc(t)})</span>
                   </div>
                   <div class="right" style="display:flex; gap:8px; align-items:flex-start;">
@@ -272,7 +272,7 @@ router.get("/:id(\\d+)", (req, res) => {
                             <div style="height:8px"></div>
                             <label>Typ zátěže</label>
                             <select name="load_type">
-                              ${opts.map(o => `<option value="${o}" ${o === lt ? "selected" : ""}>${o}</option>`).join("")}
+                              ${opts.map(o => `<option value="${o}" ${o === lt ? "selected" : ""}>${fmtLoadType(o)}</option>`).join("")}
                             </select>
                             <div style="height:10px"></div>
                             <button class="btn" type="submit">Uložit</button>

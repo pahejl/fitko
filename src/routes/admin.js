@@ -3,6 +3,7 @@ import { db } from "../db.js";
 import { q } from "../queries.js";
 import { page, esc } from "../ui.js";
 import { topNav } from "../nav.js";
+import { fmtLoadType } from "../helpers.js";
 
 const router = Router();
 
@@ -38,7 +39,7 @@ router.get("/exercises", (req, res) => {
                 <div><a href="/admin/exercises/${r.id}"><strong>${esc(r.name)}</strong></a></div>
                 <div class="meta">
                   <span class="pill">${esc(r.body_part || "-")}</span>
-                  <span class="pill">${esc(r.load_type || "-")}</span>
+                  <span class="pill">${esc(fmtLoadType(r.load_type))}</span>
                   <span class="pill">${esc(r.gyms || "—")}</span>
                 </div>
               </div>
@@ -77,7 +78,7 @@ router.get("/exercises/new", (req, res) => {
             <label>Typ zátěže</label>
             <select name="load_type">
               ${["machine","barbell","dumbbell","cable","bodyweight","counterweight"].map(v =>
-                `<option value="${v}">${v}</option>`
+                `<option value="${v}">${fmtLoadType(v)}</option>`
               ).join("")}
             </select>
           </div>
@@ -128,7 +129,7 @@ router.get("/exercises/:id(\\d+)", (req, res) => {
               <label>Typ zátěže</label>
               <select name="load_type">
                 ${["machine","barbell","dumbbell","cable","bodyweight","counterweight"].map(v =>
-                  `<option value="${v}" ${ex.load_type === v ? "selected" : ""}>${v}</option>`
+                  `<option value="${v}" ${ex.load_type === v ? "selected" : ""}>${fmtLoadType(v)}</option>`
                 ).join("")}
               </select>
             </div>

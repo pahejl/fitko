@@ -13,6 +13,9 @@
   const chartEl = document.getElementById('chartEl');
   const mPR = document.getElementById('mPR');
 
+  var LT_CS = {machine:'Stroj',cable:'Kladka',dumbbell:'Činka',barbell:'Osa',bodyweight:'Vlastní',counterweight:'Protizávaží'};
+  function fmtLt(lt){ return lt ? (LT_CS[lt] || lt) : ''; }
+
   let currentExerciseId = null;
   let currentType = null;
   let wVal = 0;
@@ -147,7 +150,7 @@
     setsList.innerHTML = j.sets.map(function(s){
       const when = new Date(s.created_at).toLocaleTimeString('cs-CZ', { timeZone: 'Europe/Prague', hour: '2-digit', minute: '2-digit' });
       const w = (s.weight ?? 0);
-      const t = s.load_type ? (' <span class="pill">' + s.load_type + '</span>') : '';
+      const t = s.load_type ? (' <span class="pill">' + fmtLt(s.load_type) + '</span>') : '';
       return (
         '<div class="setrow">' +
           '<div><strong>' + w + 'kg</strong> × <strong>' + s.reps + '</strong>' + t + ' <span class="muted">(' + when + ')</span></div>' +
