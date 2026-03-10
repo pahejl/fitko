@@ -169,7 +169,7 @@
       const type = exbtn.dataset.type || '';
       currentPRs = {};
       setType(type || 'machine');
-      mMeta.innerHTML = (body ? '<span class="pill">' + body + '</span> ' : '') + '<span class="pill">' + type + '</span>';
+      mMeta.innerHTML = body ? '<span class="pill">' + body + '</span>' : '';
 
       const lw = exbtn.dataset.lastWeight;
       const lr = exbtn.dataset.lastReps;
