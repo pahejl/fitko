@@ -114,13 +114,15 @@ router.get("/", (req, res) => {
     const padL=52,padR=12,padT=14,padB=34;
     const x0=padL,y0=padT,x1=W-padR,y1=H-padB;
     const vols = data.map(p=>p.volume);
-    let vMax = Math.max(...vols);
-    if(!isFinite(vMax)||vMax<=0) vMax=1;
-    // FIX: always start Y axis at 0 so early workouts are visible
-    const vMin = 0;
-    const pow = Math.pow(10, Math.floor(Math.log10(vMax)));
-    vMax = Math.ceil(vMax/pow*5)/5*pow;
-    if(vMax<=vMin) vMax=vMin+1;
+    const vRawMin = Math.min(...vols);
+    let vRawMax = Math.max(...vols);
+    if(!isFinite(vRawMax)||vRawMax<=0) vRawMax=1;
+    // Floating Y axis: scale proportionally to actual data range
+    const range = vRawMax - vRawMin || 1;
+    const step = Math.pow(10, Math.floor(Math.log10(range)));
+    let vMin = Math.max(0, Math.floor((vRawMin - range * 0.2) / step) * step);
+    let vMax = Math.ceil((vRawMax + range * 0.1) / step) * step;
+    if(vMax<=vMin) vMax=vMin+step;
     function yScale(v){ return y1-(v-vMin)/(vMax-vMin)*(y1-y0); }
     function xScale(i){ return x0+(data.length===1?0:(i/(data.length-1)))*(x1-x0); }
     ctx.strokeStyle='#eee'; ctx.fillStyle='#666';
@@ -136,7 +138,8 @@ router.get("/", (req, res) => {
     ctx.fillStyle='#666';
     idxs.forEach(i=>{
       const x=xScale(i);
-      const lab=String(data[i].date).slice(5).replace('-','.');
+      const d=String(data[i].date);
+      const lab=d.slice(8)+'.'+d.slice(5,7);
       ctx.fillText(lab,Math.min(Math.max(x-16,x0),x1-30),H-12);
     });
     ctx.strokeStyle='#111'; ctx.lineWidth=2;
