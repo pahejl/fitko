@@ -121,6 +121,8 @@ export function page({ title, body, topNav = "" }) {
       max-height: calc(100dvh - 40px);
       padding:0;
       overflow:hidden;
+    }
+    dialog[open]{
       display:flex; flex-direction:column;
     }
     dialog::backdrop{ background: rgba(0,0,0,.35); }
