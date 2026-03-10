@@ -90,14 +90,14 @@ export const q = {
             WHERE s.exercise_id=e.id
             ORDER BY s.created_at DESC
             LIMIT 1) AS last_reps,
-           (SELECT MAX(s.weight) FROM sets s WHERE s.exercise_id=e.id) AS pr_weight
+           (SELECT MAX(s.weight) FROM sets s WHERE s.exercise_id=e.id AND s.load_type IS e.load_type) AS pr_weight
     FROM exercise_gym eg
     JOIN exercises e ON e.id=eg.exercise_id
     WHERE eg.gym_id=?
     ORDER BY eg.position ASC, lower(e.name) ASC
   `),
 
-  exerciseMaxWeight: db.prepare(`SELECT MAX(weight) AS max_w FROM sets WHERE exercise_id=?`),
+  exerciseMaxWeightForType: db.prepare(`SELECT MAX(weight) AS max_w FROM sets WHERE exercise_id=? AND load_type IS ?`),
   exerciseHistory: db.prepare(`
     SELECT date(created_at, 'localtime') AS day,
            MAX(weight) AS max_weight,

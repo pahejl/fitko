@@ -24,7 +24,7 @@ router.post("/sets", (req, res) => {
     if (workout.ended_at) return res.json({ ok: false, error: "workout already ended" });
 
     const lt = load_type || (q.exerciseById.get(exercise_id)?.load_type ?? null);
-    const prevMax = q.exerciseMaxWeight.get(exercise_id)?.max_w ?? 0;
+    const prevMax = q.exerciseMaxWeightForType.get(exercise_id, lt)?.max_w ?? 0;
     q.setInsert.run(workout_id, exercise_id, nowIso(), Number.isFinite(weight) ? weight : null, reps, lt);
     const newPR = Number.isFinite(weight) && weight > 0 && weight > prevMax;
     return res.json({ ok: true, newPR });

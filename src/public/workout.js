@@ -133,6 +133,7 @@
   }
 
   document.addEventListener('click', async function(e){
+    if (modal.contains(e.target)) return;
     const exbtn = e.target.closest('.exbtn');
     if (exbtn){
       currentExerciseId = Number(exbtn.dataset.exId);
@@ -163,7 +164,7 @@
     if (chartVisible) await loadChart();
   });
 
-  document.getElementById('mClose').addEventListener('click', function(){ modal.close(); });
+  document.getElementById('mClose').addEventListener('click', function(e){ e.stopPropagation(); modal.close(); });
   document.getElementById('refreshSets').addEventListener('click', loadSets);
 
   document.querySelectorAll('[data-w]').forEach(function(b){
