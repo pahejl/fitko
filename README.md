@@ -8,15 +8,6 @@ Mobilní appka na logování tréninku (SQLite + Express + Docker).
 docker compose up -d --build
 ```
 
-## Autentizace (doporučeno!)
-
-Appka je přístupná přes HTTP Basic Auth. Nastav v `.env` souboru (vedle `compose.yml`):
-
-```env
-FITKO_USER=tvoje_jmeno
-FITKO_PASS=silne_heslo
-```
-
 Pokud proměnné nejsou nastaveny, auth je vypnutá (vhodné pouze pro lokální použití).
 
 ## Struktura souborů
