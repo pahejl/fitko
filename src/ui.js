@@ -111,12 +111,14 @@ export function page({ title, body, topNav = "" }) {
     dialog{
       border:1px solid #ddd; border-radius: 18px;
       width: min(520px, calc(100% - 24px));
+      max-height: calc(100dvh - 40px);
       padding:0;
       overflow:hidden;
+      display:flex; flex-direction:column;
     }
     dialog::backdrop{ background: rgba(0,0,0,.35); }
-    .modal-h{ padding: 14px 14px 10px; border-bottom:1px solid #eee; background:#fff; }
-    .modal-b{ padding: 14px; background:#fff; display:grid; gap:12px; }
+    .modal-h{ padding: 14px 14px 10px; border-bottom:1px solid #eee; background:#fff; flex-shrink:0; }
+    .modal-b{ padding: 14px; background:#fff; display:grid; gap:12px; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
     .steps{ display:grid; gap:10px; }
     .stepper{
       display:flex; gap:8px; align-items:center;
