@@ -17,6 +17,7 @@
   let wVal = 0;
   let rVal = 10;
   let chartVisible = false;
+  let closeTime = 0;
 
   function round1(x){ return Math.round(x * 10) / 10; }
 
@@ -134,6 +135,7 @@
 
   document.addEventListener('click', async function(e){
     if (modal.contains(e.target)) return;
+    if (Date.now() - closeTime < 450) return;
     const exbtn = e.target.closest('.exbtn');
     if (exbtn){
       currentExerciseId = Number(exbtn.dataset.exId);
@@ -164,7 +166,7 @@
     if (chartVisible) await loadChart();
   });
 
-  document.getElementById('mClose').addEventListener('click', function(e){ e.stopPropagation(); modal.close(); });
+  document.getElementById('mClose').addEventListener('click', function(e){ e.stopPropagation(); closeTime = Date.now(); modal.close(); });
   document.getElementById('refreshSets').addEventListener('click', loadSets);
 
   document.querySelectorAll('[data-w]').forEach(function(b){
