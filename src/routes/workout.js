@@ -77,7 +77,8 @@ router.get("/:id(\\d+)", (req, res) => {
                 data-last-weight="${e.last_weight ?? ""}"
                 data-last-reps="${e.last_reps ?? ""}"
                 data-body="${esc(e.body_part || "")}"
-                data-type="${esc(e.load_type || "")}">
+                data-type="${esc(e.load_type || "")}"
+                data-pr="${e.pr_weight ?? ""}">
                 <strong>${esc(e.name)}</strong>
                 <div class="small">
                   <span class="pill">${esc(e.body_part || "-")}</span>
@@ -85,6 +86,7 @@ router.get("/:id(\\d+)", (req, res) => {
                   ${e.last_weight != null || e.last_reps != null
                     ? `<span class="pill">last: ${esc(String(e.last_weight ?? "—"))}kg × ${esc(String(e.last_reps ?? "—"))}</span>`
                     : `<span class="pill">last: —</span>`}
+                  ${e.pr_weight != null ? `<span class="pill pr">PR: ${esc(String(e.pr_weight))}kg</span>` : ""}
                   ${e.notes ? `<span class="pill note">${esc(e.notes)}</span>` : ""}
                 </div>
               </button>
@@ -117,7 +119,10 @@ router.get("/:id(\\d+)", (req, res) => {
               </div>
             </div>
           </div>
-          <button class="btn small secondary" id="mClose" type="button">Zavřít</button>
+          <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">
+            <button class="btn small secondary" id="mClose" type="button">Zavřít</button>
+            <button class="btn small secondary" id="mChart" type="button">Graf</button>
+          </div>
         </div>
       </div>
       <div class="modal-b">
@@ -146,7 +151,7 @@ router.get("/:id(\\d+)", (req, res) => {
             <button class="btn" id="saveSet" type="button">Uložit set</button>
             <button class="btn secondary" id="dupSet" type="button" title="Uloží znovu stejné hodnoty">Dup</button>
           </div>
-          <div id="saveConfirm" style="display:none; color:#1a7f3c; font-weight:700; text-align:center;">✓ Set uložen!</div>
+          <div id="saveConfirm" style="display:none; font-weight:700; text-align:center;">✓ Set uložen!</div>
         </div>
 
         <div>
@@ -156,6 +161,11 @@ router.get("/:id(\\d+)", (req, res) => {
           </div>
           <div style="height:10px"></div>
           <div class="sets" id="setsList"><div class="muted">—</div></div>
+        </div>
+
+        <div id="chartSection" style="display:none;">
+          <div class="h2">Vývoj váhy</div>
+          <div id="chartEl"></div>
         </div>
       </div>
     </dialog>

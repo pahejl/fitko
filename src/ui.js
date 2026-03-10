@@ -14,6 +14,12 @@ export function page({ title, body, topNav = "" }) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>${esc(title)}</title>
+  <link rel="manifest" href="/static/manifest.json" />
+  <meta name="theme-color" content="#111111" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="fitko" />
+  <link rel="apple-touch-icon" href="/static/icon.svg" />
   <style>
     :root{
       color-scheme: light;
@@ -78,6 +84,7 @@ export function page({ title, body, topNav = "" }) {
     .row > *{ flex:1; }
     .right{ text-align:right; }
     .pill{ display:inline-block; padding:4px 8px; background:var(--card); border:1px solid #e6e6e6; border-radius:999px; font-size:12px; color:var(--muted); }
+    .pill.pr{ background:#fff8e1; border-color:#f9d71c; color:#7a6200; font-weight:700; }
     .chips{ display:flex; gap:6px; flex-wrap:wrap; }
     .chip{ border:1px solid #ddd; background:#fff; padding:8px 10px; border-radius:999px; font-size:13px; cursor:pointer; }
     .chip.active{ background:#111; color:#fff; border-color:#111; font-weight:800; }
@@ -162,6 +169,7 @@ export function page({ title, body, topNav = "" }) {
   <main>
     ${body}
   </main>
+  <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js');</script>
 </body>
 </html>`;
 }

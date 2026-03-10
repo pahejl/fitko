@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd.exe /c \"where npm\")",
+      "Bash(cmd.exe /c \"where node & where npm\")",
+      "Bash(\"/c/Users/pavel/AppData/Local/Logi/LogiPluginService/PluginHosts/node22/node/node.exe\" --version)"
+    ]
+  }
+}

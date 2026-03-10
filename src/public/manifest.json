@@ -1,0 +1,12 @@
+{
+  "name": "fitko",
+  "short_name": "fitko",
+  "description": "Workout logging app",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#111111",
+  "icons": [
+    { "src": "/static/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
