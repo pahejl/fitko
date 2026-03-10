@@ -117,6 +117,7 @@ router.get("/:id(\\d+)", (req, res) => {
                 <button type="button" class="chip" data-t="bodyweight">Vlastní</button>
                 <button type="button" class="chip" data-t="counterweight">Protizávaží</button>
               </div>
+              <div id="mPR" style="margin-top:6px; font-size:13px; color:#7a6200; font-weight:700; min-height:18px;"></div>
             </div>
           </div>
           <div style="display:flex; flex-direction:column; gap:6px; flex-shrink:0;">

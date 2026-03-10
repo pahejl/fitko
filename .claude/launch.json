@@ -3,13 +3,13 @@
   "configurations": [
     {
       "name": "fitko (dev)",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
       "runtimeArgs": ["run", "dev"],
       "port": 8080
     },
     {
       "name": "fitko (start)",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
       "runtimeArgs": ["run", "start"],
       "port": 8080
     }

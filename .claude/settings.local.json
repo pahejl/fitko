@@ -3,7 +3,15 @@
     "allow": [
       "Bash(cmd.exe /c \"where npm\")",
       "Bash(cmd.exe /c \"where node & where npm\")",
-      "Bash(\"/c/Users/pavel/AppData/Local/Logi/LogiPluginService/PluginHosts/node22/node/node.exe\" --version)"
+      "Bash(\"/c/Users/pavel/AppData/Local/Logi/LogiPluginService/PluginHosts/node22/node/node.exe\" --version)",
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(cmd.exe /c \"node --version && npm --version\")",
+      "Bash(cmd.exe /c \"where node 2>&1 && where npm 2>&1\")",
+      "Read(//c/Program Files/nodejs//**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Bash(\"/c/Program Files/nodejs/npm.cmd\" install)",
+      "Bash(PATH=\"/c/Program Files/nodejs:$PATH\" \"/c/Program Files/nodejs/npm.cmd\" install)"
     ]
   }
 }

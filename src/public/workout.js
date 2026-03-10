@@ -11,6 +11,7 @@
   const mChartBtn = document.getElementById('mChart');
   const chartSection = document.getElementById('chartSection');
   const chartEl = document.getElementById('chartEl');
+  const mPR = document.getElementById('mPR');
 
   let currentExerciseId = null;
   let currentType = null;
@@ -18,6 +19,7 @@
   let rVal = 10;
   let chartVisible = false;
   let closeTime = 0;
+  let currentPRs = {};
 
   function round1(x){ return Math.round(x * 10) / 10; }
 
@@ -43,6 +45,24 @@
         btn.classList.toggle('active', btn.dataset.t === currentType);
       });
     }
+    if (mPR) {
+      var pr = currentType ? currentPRs[currentType] : null;
+      if (pr != null) {
+        var label = currentType === 'counterweight' ? 'PR (nejlehčí): ' : 'PR: ';
+        mPR.textContent = label + pr + 'kg';
+      } else {
+        mPR.textContent = '';
+      }
+    }
+  }
+
+  async function loadPRs() {
+    if (!currentExerciseId) return;
+    try {
+      var res = await fetch('/api/exercises/' + currentExerciseId + '/prs');
+      var j = await res.json();
+      if (j.ok) { currentPRs = j.prs; setType(currentType); }
+    } catch(e) {}
   }
 
   function setR(v){
@@ -143,6 +163,7 @@
 
       const body = exbtn.dataset.body || '';
       const type = exbtn.dataset.type || '';
+      currentPRs = {};
       setType(type || 'machine');
       mMeta.innerHTML = (body ? '<span class="pill">' + body + '</span> ' : '') + '<span class="pill">' + type + '</span>';
 
@@ -155,6 +176,7 @@
       chartSection.style.display = 'none';
       mChartBtn.textContent = 'Graf';
       modal.showModal();
+      loadPRs();
       await loadSets();
     }
   });
