@@ -18,6 +18,7 @@
 
   let currentExerciseId = null;
   let currentType = null;
+  let currentBody = '';
   let wVal = 0;
   let rVal = 10;
   let chartVisible = false;
@@ -126,11 +127,14 @@
     if (!currentExerciseId) return;
     chartEl.innerHTML = '<div class="muted">Načítám...</div>';
     var url = '/api/exercises/' + currentExerciseId + '/history';
-    if (currentType) url += '?load_type=' + encodeURIComponent(currentType);
+    var params = [];
+    if (currentType) params.push('load_type=' + encodeURIComponent(currentType));
+    params.push('mode=volume_by_part');
+    url += '?' + params.join('&');
     var res = await fetch(url);
     var j = await res.json();
     if (!j.ok) { chartEl.innerHTML = '<div class="muted">Chyba.</div>'; return; }
-    var label = (currentType ? fmtLt(currentType) : 'Vše') + ' · est. 1RM';
+    var label = (currentBody || '?') + ' · ' + (currentType ? fmtLt(currentType) : 'Vše') + ' · nálož';
     renderChart(j.history, chartEl, label);
   }
 
@@ -168,6 +172,7 @@
       mTitle.textContent = exbtn.dataset.exName || 'Cvik';
 
       const body = exbtn.dataset.body || '';
+      currentBody = body;
       const type = exbtn.dataset.type || '';
       currentPRs = {};
       setType(type || 'machine');

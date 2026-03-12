@@ -157,6 +157,22 @@ export const q = {
     LIMIT 30
   `),
 
+  // Total volume (weight×reps) per day for a body_part + load_type
+  // params: (exercise_id, load_type)
+  exerciseVolumeByPartAndType: db.prepare(`
+    SELECT date(s.created_at, 'localtime') AS day,
+           SUM(s.weight * s.reps) AS max_weight,
+           COUNT(*) AS sets_count
+    FROM sets s
+    JOIN exercises e ON e.id = s.exercise_id
+    WHERE e.body_part = (SELECT body_part FROM exercises WHERE id = ?)
+      AND s.load_type IS ?
+      AND s.weight IS NOT NULL AND s.reps > 0
+    GROUP BY date(s.created_at, 'localtime')
+    ORDER BY day ASC
+    LIMIT 30
+  `),
+
   setInsert: db.prepare(`INSERT INTO sets (workout_id, exercise_id, created_at, weight, reps, load_type) VALUES (?,?,?,?,?,?)`),
   setUpdate: db.prepare(`UPDATE sets SET weight=?, reps=?, load_type=? WHERE id=?`),
   setDelete: db.prepare(`DELETE FROM sets WHERE id=?`),

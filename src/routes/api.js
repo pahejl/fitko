@@ -57,9 +57,15 @@ router.get("/exercises/:id(\\d+)/history", (req, res) => {
   try {
     const id = Number(req.params.id);
     const lt = typeof req.query.load_type === "string" ? req.query.load_type : null;
-    const history = lt
-      ? q.exerciseHistoryByType.all(lt, id, lt)
-      : q.exerciseHistory.all(id);
+    const mode = req.query.mode;
+    let history;
+    if (mode === 'volume_by_part' && lt) {
+      history = q.exerciseVolumeByPartAndType.all(id, lt);
+    } else if (lt) {
+      history = q.exerciseHistoryByType.all(lt, id, lt);
+    } else {
+      history = q.exerciseHistory.all(id);
+    }
     res.json({ ok: true, history });
   } catch (e) {
     res.json({ ok: false, error: e?.message || String(e) });
