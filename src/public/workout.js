@@ -245,7 +245,6 @@
     const btn = e.target.closest('[data-del]');
     if (!btn) return;
     const sid = Number(btn.dataset.del);
-    if (!confirm('Smazat set?')) return;
     const res = await fetch('/api/sets/' + sid, { method: 'DELETE' });
     const j = await res.json();
     if (!j.ok){ alert('Chyba: ' + (j.error || '')); return; }
