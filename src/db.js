@@ -69,6 +69,9 @@ export function migrate() {
   ensureColumn('exercise_gym', 'notes', 'TEXT NULL');
 }
 
+// Migrate on import so modules that prepare statements (queries.js) always see the full schema
+migrate();
+
 export function nowIso() {
   return new Date().toISOString();
 }
