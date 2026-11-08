@@ -2,7 +2,6 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { migrate } from "./db.js";
 import { page, esc } from "./ui.js";
 import { topNav } from "./nav.js";
 import { q } from "./queries.js";
@@ -20,9 +19,6 @@ const app = express();
 app.use("/static", express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Run DB migrations before anything else
-migrate();
 
 // ---- Auth (Basic HTTP Auth if FITKO_USER + FITKO_PASS env vars are set) ----
 app.use(authMiddleware);

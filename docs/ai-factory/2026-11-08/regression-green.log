@@ -1,0 +1,16 @@
+status: completed exit_code: 0
+
+> fitko@0.3.0 test
+> node --test
+
+✔ fresh DB: importing queries.js directly needs no caller migration (25.676958ms)
+✔ legacy DB: additive columns added, existing data preserved, notes work (73.048708ms)
+✔ fresh DB: actual server starts and serves / with empty gym list (57.911458ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 186.35825
